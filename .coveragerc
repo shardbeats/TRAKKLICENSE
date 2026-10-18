@@ -1,0 +1,8 @@
+[run]
+source = app
+omit = app/__init__.py, tests/*, tools/*, app/ui/*, app/utils/__init__.py, app/services/__init__.py, app/database/__init__.py, app/engine/__init__.py
+branch = true
+
+[report]
+show_missing = true
+skip_covered = false

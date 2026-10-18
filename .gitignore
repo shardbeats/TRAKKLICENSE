@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.coverage
+
+# PyInstaller
+build/
+dist/
+dist-installer/
+*.spec
+
+# OS
+Thumbs.db
+.DS_Store
+
+# App data (local only, never commit real sales)
+data/
+*.db
+*.log
+out/
