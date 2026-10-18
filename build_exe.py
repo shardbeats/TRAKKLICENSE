@@ -36,9 +36,32 @@ def project_version() -> str:
     return m.group(1)
 
 
+def ensure_pytest(python: str) -> bool:
+    """Fresh venvs (start.bat) only install requirements.txt (app deps).
+
+    pytest lives in requirements-dev.txt, so a fresh clone has no pytest.
+    Install dev deps on demand instead of failing the build.
+    """
+    probe = subprocess.run([python, "-m", "pytest", "--version"],
+                           capture_output=True, cwd=ROOT)
+    if probe.returncode == 0:
+        return True
+    print("pytest not found. Installing requirements-dev.txt...")
+    dev = ROOT / "requirements-dev.txt"
+    if not dev.is_file():
+        print(f"ERROR: {dev.name} missing, cannot install pytest.")
+        return False
+    r = subprocess.run([python, "-m", "pip", "install", "-r", str(dev)], cwd=ROOT)
+    return r.returncode == 0
+
+
 def run_tests() -> int:
     print("[1/2] Running pytest...")
-    r = subprocess.run([build_python(), "-m", "pytest", "tests", "-q"], cwd=ROOT)
+    python = build_python()
+    if not ensure_pytest(python):
+        print("ERROR: could not install pytest, aborting build.")
+        return 1
+    r = subprocess.run([python, "-m", "pytest", "tests", "-q"], cwd=ROOT)
     return r.returncode
 
 
