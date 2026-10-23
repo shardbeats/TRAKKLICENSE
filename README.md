@@ -1,6 +1,6 @@
 # TRAKKLICENSE
 
-Offline beat-license generator for beatmakers. Part of ShardBeats TRAKK family.
+Offline beat-license generator for beatmakers. Part of ShardBeats TRAKK SUITE.
 
 Templates + editable variables → live preview → PDF/MD with evidence footer. No accounts, no cloud.
 
