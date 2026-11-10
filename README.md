@@ -1,5 +1,16 @@
 # TRAKKLICENSE
 
+> **Generate beat license contracts as PDF, offline** — lease and exclusive tiers, EN/ES templates, live preview, sequential folios and a SHA256 evidence footer. No accounts, no cloud, no lawyer required to fill a form.
+
+**[Download for Windows](https://github.com/shardbeats/TRAKKLICENSE/releases/latest)** · **[All 6 tools](https://shardbeats.github.io/tools/)** · **[Free beat pack (WAV + stems)](https://shardbeats.github.io/landing/)**
+
+<!-- Screenshot: save the image as docs/screenshot.png, then uncomment this block
+<p align="center"><img src="docs/screenshot.png" alt="TRAKKLICENSE generating a beat license contract PDF" width="880"></p>
+-->
+
+Free and open source (MIT). Portable exe, no install, no admin rights, no third-party binaries — your contracts and customer data never leave your computer.
+
+
 Offline beat-license generator for beatmakers. Part of ShardBeats TRAKK SUITE.
 
 Templates + editable variables → live preview → PDF/MD with evidence footer. No accounts, no cloud.
@@ -195,3 +206,34 @@ criterio y riesgo ("as is", sin garantías). La responsabilidad final es 100% de
 verifica cada contrato con un abogado de tu jurisdicción, asegura que tienes los derechos
 que licencias, declara tus samples, y registra tus regalías en tu PRO. Los autores no
 responden por reclamos, daños ni pérdidas derivados de su uso.
+
+## TRAKK SUITE
+
+Six free, offline tools for beatmakers. They are independent: install only what you need.
+
+| Tool | What it does |
+|---|---|
+| [TRAKKSTUDIO](https://github.com/shardbeats/TRAKKSTUDIO) | Organize, convert and normalize in a single window |
+| [TRAKKCONVERTER](https://github.com/shardbeats/TRAKKCONVERTER) | Sample libraries → WAV for the Roland SP-404MK2 |
+| [TRAKKNORMALIZER](https://github.com/shardbeats/TRAKKNORMALIZER) | Per-clip peak normalization for sample packs |
+| [TRAKKNAME](https://github.com/shardbeats/TRAKKNAME) | Beat title generator (EN/ES, 20 moods) |
+| [TRAKKOUT](https://github.com/shardbeats/TRAKKOUT) | Beat + artwork → 1080p MP4 for YouTube |
+| **TRAKKLICENSE** | Beat license contracts as PDF (EN/ES) |
+
+- **Website:** https://shardbeats.github.io/tools/
+- **Free beat pack (WAV + stems):** https://shardbeats.github.io/landing/
+- **Sound kits:** https://www.beatstars.com/shardbeats/sound-kits
+
+## FAQ
+
+**Is it free?** Yes. MIT licensed, free for personal and commercial use, with no account and no usage limits.
+
+**Is this legal advice?** No, and it does not pretend to be. It is a self-help document generator: it fills templates with the values you type. Read the full disclaimer at the bottom of this page before using it for a real deal.
+
+**Which licenses are included?** MP3, WAV, Trackout and Unlimited lease (non-exclusive) plus Exclusive, with the usual differences in term, delivery, royalty, publishing split and sales caps.
+
+**Can I edit the contract text?** Yes. Edits are copy-on-write: the bundled seeds stay read-only, so Reset always restores the original.
+
+**How do I prove a sale happened?** Every export gets a sequential folio that is never reused, plus a SHA256 of the rendered text and the template version, stored in a local SQLite history.
+
+**Does it work offline?** Yes, completely. No telemetry and no third-party binaries.
