@@ -120,21 +120,23 @@ evidence footer, page size LETTER/A4, default language/currency, acceptance-chec
 Gates (`QUALITY_METRICS.md`, procedures in `QA.md`): 100% pass rate, ≥80% coverage,
 7/7 Gherkin scenarios (`features/*.feature`), PDF export smoke (>500B), template no-leak scan.
 
-## Build the .exe
+## Build the portable ZIP
 ```
-py build_exe.py              :: tests + windowed one-file exe (~60 MB, bundles styles.qss + seeds)
-py build_exe.py --console    :: console build for diagnostics
-py build_exe.py --skip-tests :: skip pytest (not recommended)
+py build_portable.py              :: tests + onedir build + dist\TRAKKLICENSE-portable-<ver>.zip
+py build_portable.py --console    :: console build for diagnostics
+py build_portable.py --skip-tests :: skip pytest (not recommended)
 ```
 
 ## Distribution
-Portable: copy `dist\TRAKKLICENSE.exe` anywhere (no installer needed — offline app,
-no third-party binaries, no admin rights). First launch creates `data\` next to it
-(DB, Reexports, settings). No installer is shipped (see MAINTENANCE for the rationale).
+Portable: unzip `dist\TRAKKLICENSE-portable-<version>.zip` once and run
+`TRAKKLICENSE\TRAKKLICENSE.exe` (no installer needed — offline app, no
+third-party binaries, no admin rights). One-dir: instant startup, nothing is
+extracted to `%TMP%`. First launch creates `data\` next to it (DB, Reexports,
+settings). No installer is shipped (see MAINTENANCE for the rationale).
 
 ## Version
 Single source: `app/version.py` (`__version__`, shown in the window title + Help > About).
-`pyproject.toml` and `build_exe.py` read it — bump it there per release.
+`pyproject.toml` and `build_portable.py` read it — bump it there per release.
 
 ## Project layout
 ```

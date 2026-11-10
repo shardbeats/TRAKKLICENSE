@@ -1,20 +1,36 @@
 #!/usr/bin/env python3
-"""Build a portable one-file .exe for TRAKKLICENSE (PyInstaller).
+"""Build the portable TRAKKLICENSE (one-dir inside a ZIP).
 
-Bundles styles.qss + seed_templates.
+One-dir starts instantly: nothing is extracted on launch. The portable is
+shipped as a ZIP the user unzips once:
+
+    dist\\TRAKKLICENSE-portable-<version>.zip
+        TRAKKLICENSE\\
+            TRAKKLICENSE.exe
+            _internal\\   (Qt, styles.qss, seed_templates, ...)
+            README.md / LICENSE / NOTICE.md / THIRD-PARTY-NOTICES.md
+
 Usage:
-  python build_exe.py              # tests + windowed exe (~60 MB)
-  python build_exe.py --console    # console build for diagnostics
-  python build_exe.py --skip-tests # skip pytest (not recommended)
+  python build_portable.py              # tests + windowed onedir + ZIP
+  python build_portable.py --console    # console build for diagnostics
+  python build_portable.py --skip-tests # skip pytest (not recommended)
+
+The old `build_exe.py` produced a one-file exe that re-extracted the payload
+to %TMP% on EVERY launch; it was removed on purpose.
 """
+import os
 import re
+import shutil
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 APP_NAME = "TRAKKLICENSE"
 ICON_NAME = "icon.ico"
+EXE_DIR = ROOT / "dist" / "portable" / APP_NAME
+DOCS = ("README.md", "LICENSE", "NOTICE.md", "THIRD-PARTY-NOTICES.md")
 VENV_PY = ROOT / ".venv" / "Scripts" / "python.exe"
 
 
@@ -37,11 +53,7 @@ def project_version() -> str:
 
 
 def ensure_pytest(python: str) -> bool:
-    """Fresh venvs (start.bat) only install requirements.txt (app deps).
-
-    pytest lives in requirements-dev.txt, so a fresh clone has no pytest.
-    Install dev deps on demand instead of failing the build.
-    """
+    """Fresh venvs (start.bat) only install requirements.txt (app deps)."""
     probe = subprocess.run([python, "-m", "pytest", "--version"],
                            capture_output=True, cwd=ROOT)
     if probe.returncode == 0:
@@ -67,7 +79,8 @@ def run_tests() -> int:
 
 def main() -> int:
     args = set(sys.argv[1:])
-    print(f"{APP_NAME} version: {project_version()}")
+    version = project_version()
+    print(f"{APP_NAME} version: {version}")
     if "--skip-tests" not in args:
         if run_tests() != 0:
             print("ERROR: tests failed, aborting build.")
@@ -83,14 +96,16 @@ def main() -> int:
         print("PyInstaller not installed. Installing...")
         subprocess.run([python, "-m", "pip", "install", "pyinstaller"], check=True)
 
-    import os
-    sep = os.pathsep  # FIX: ";" only works on Windows — os.pathsep keeps Linux/macOS builds working.
+    sep = os.pathsep  # ";" only on Windows — keeps Linux/macOS builds working.
     windowed = [] if "--console" in args else ["--windowed"]
     cmd = [
         python, "-m", "PyInstaller",
-        "--noconfirm", "--clean", "--onefile",
+        "--noconfirm", "--clean", "--onedir",
         *windowed,
         "--name", APP_NAME,
+        "--distpath", "dist/portable",
+        "--workpath", "build/portable",
+        "--specpath", "build/portable",
         "--add-data", f"{ROOT / 'app' / 'ui' / 'styles.qss'}{sep}app/ui",
         "--add-data", f"{ROOT / 'app' / 'seed_templates'}{sep}app/seed_templates",
     ]
@@ -102,17 +117,34 @@ def main() -> int:
         print("  WARNING: no icon.ico, using default PyInstaller icon.")
 
     cmd.append(str(ROOT / "main.py"))
+    if EXE_DIR.exists():
+        shutil.rmtree(EXE_DIR, ignore_errors=True)
     print("[2/2] Running PyInstaller...")
     print("  " + " ".join(cmd))
     subprocess.run(cmd, check=True, cwd=ROOT)
 
-    exe = ROOT / "dist" / f"{APP_NAME}.exe"
-    if exe.exists():
-        print(f"BUILD OK: {exe} ({exe.stat().st_size/1024/1024:.1f} MB)")
-        print("Portable: copy the .exe anywhere. First launch creates data/ next to it or %APPDATA%/TRAKKLICENSE.")
-        return 0
-    print("ERROR: exe not found in dist/")
-    return 1
+    exe = EXE_DIR / f"{APP_NAME}.exe"
+    if not exe.is_file():
+        print("ERROR: exe not found in dist/portable/")
+        return 1
+
+    for name in DOCS:
+        src = ROOT / name
+        if src.is_file():
+            shutil.copy2(src, EXE_DIR / name)
+
+    out = ROOT / "dist" / f"{APP_NAME}-portable-{version}.zip"
+    if out.exists():
+        out.unlink()
+    with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as zf:
+        for p in sorted(EXE_DIR.rglob("*")):
+            if p.is_file():
+                zf.write(p, Path(APP_NAME) / p.relative_to(EXE_DIR))
+
+    print(f"BUILD OK: {out} ({out.stat().st_size / 1e6:.1f} MB)")
+    print(f"Unzip once, then run {APP_NAME}\\{APP_NAME}.exe "
+          "(first launch creates data/ next to it).")
+    return 0
 
 
 if __name__ == "__main__":

@@ -15,8 +15,8 @@ Operations handover for keeping this project healthy. Read before touching valid
 .venv\Scripts\python -m pytest tests -q -p no:cacheprovider --no-cov -m "not slow"  :: fast loop
 .venv\Scripts\python tools\quality_metrics.py          :: gates PASS → data\quality_report.json (pass 100%, cov ≥80%, PDF smoke, gherkin)
 .venv\Scripts\python main.py                           :: run (same as run.bat)
-.venv\Scripts\python build_exe.py                      :: tests + windowed dist\TRAKKLICENSE.exe (~60 MB, bundles styles.qss + seeds)
-.venv\Scripts\python build_exe.py --console             :: console build for diagnostics
+.venv\Scripts\python build_portable.py                  :: tests + onedir + dist\TRAKKLICENSE-portable-<ver>.zip
+.venv\Scripts\python build_portable.py --console         :: console build for diagnostics
 ```
 
 ## Layer rules (important)
@@ -26,7 +26,7 @@ Operations handover for keeping this project healthy. Read before touching valid
 - `sale_service.save_current_sale()` is the only persist entry: assigns folio via `settings.next_folio()`, stamps `FOLIO`, **re-renders** (hash covers final text), maps to `repositories.save_sale()`. Saved text never says DRAFT (folio `""` when disabled, never the literal).
 - `settings.next_folio()/save()` are mkdir-locked + atomic (`tmp → os.replace`). Folios are never reused (deletes don't recycle); gaps on failed saves are by design, duplicates are the bug being prevented.
 - `MainWindow` is a thin coordinator (holds `_last_text/_last_data/_last_res` + 400ms debounce timer). `TERM_END` is recomputed in `_refresh_term_end()` (clamp 1–100 per `constants.py`, the single source of truth — `QIntValidator` is cosmetic) and refreshed before every preview/export (fast type → Export race wrote stale dates once).
-- `utils/paths.py` is frozen-aware: `sys.frozen` → `data/` next to `sys.executable`; `templates_dir()/styles_path()` prefer `sys._MEIPASS`. `build_exe.py` uses `os.pathsep` for `--add-data` (`;` is Windows-only).
+- `utils/paths.py` is frozen-aware: `sys.frozen` → `data/` next to `sys.executable`; `templates_dir()/styles_path()` prefer `sys._MEIPASS`. `build_portable.py` uses `os.pathsep` for `--add-data` (`;` is Windows-only).
 - `template_service`: bundled seeds (read-only, ships in exe) + user overrides (`<base>/templates/`, copy-on-write, Reset deletes the override). `template_version` is content-hash based, so custom edits are tracked by history warnings with no extra code.
 - `features/*.feature` state the contract: behavior change = update feature + steps in the same commit.
 
@@ -69,7 +69,7 @@ Opens in Edge/Acrobat, LETTER (or A4 per settings), contains beat title + partie
 - `money_to_words` raises on negatives/out-of-range: price path swallows to missing `PRICE_WORD` (validation flags the price); copies/streams catch `(ValueError, TypeError)` and pass raw values through.
 
 ## Don't touch without reason
-- `app/version.py` (`__version__` X.Y.Z — pyproject/build_exe read it; bump per release).
+- `app/version.py` (`__version__` X.Y.Z - pyproject/build_portable read it; bump per release).
 - `app/engine/policy.py` (single source for template names, caps, currencies, folio format, hash length — every layer imports it; never redefine these literals elsewhere).
 - `app/database/connection.py::SCHEMA` (column changes → add a `_migrate_*` like `_migrate_sales_ipi`; old user DBs only get columns via migrations).
 - `app/engine/variables.py::VARIABLES` (adding a key requires: template `{IF}`-guard if optional, `FIELDS`/profile wiring if user-fillable, `sale_service` mapping + migration if persisted, ES mirror, cases in `test_ipi.py`-style coverage).
@@ -84,6 +84,6 @@ Opens in Edge/Acrobat, LETTER (or A4 per settings), contains beat title + partie
 3. Preset/tier rule → case in `features/presets.feature` (+ `test_term_dates.py` if term-related).
 4. Validation rule → `engine/validators.py` (+ `generate()` samples guard pattern) → status message in `on_generate`, never a modal on `errors` (preview must still render; only literal-placeholder `missing` blocks export/save).
 5. UI change → offscreen GUI test (`QT_QPA_PLATFORM=offscreen`, `TRAKKLICENSE_DATA_DIR=tmp_path` pattern) → full `pytest` (GUI tests affect coverage).
-6. Release → bump `app/version.py` → `pytest` green → `quality_metrics.py` PASS → manual 1 non-exclusive + 1 exclusive with demo data, open both PDFs → `py build_exe.py` → test exe in a clean folder (portable `data/` created next to it). Distribution is the portable exe + README (no installer shipped: offline app, no third-party binaries to bundle).
+6. Release → bump `app/version.py` → `pytest` green → `quality_metrics.py` PASS → manual 1 non-exclusive + 1 exclusive with demo data, open both PDFs → `py build_portable.py` → test the unzipped folder in a clean folder (portable `data/` created next to the exe). Distribution is the portable ZIP + README (no installer shipped: offline app, no third-party binaries to bundle).
 - Frozen crashes: windowed exes have `stdout=None` — `main.py` redirects stdio to `<base>/trakklicense.log` and hooks uncaught exceptions to `<base>/error.log` + dialog (`app/utils/crash.py`, offscreen-safe). Never write user data under `sys._MEIPASS`.
 - `start.bat` rejects the Microsoft Store python stub and sanity-checks a fresh venv; keep those checks when editing bats.

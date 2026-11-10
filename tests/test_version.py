@@ -24,7 +24,7 @@ def test_version_single_source():
     assert re.fullmatch(r"\d+\.\d+\.\d+", __version__), __version__
     root = Path(__file__).resolve().parents[1]
     assert 'app.version.__version__' in (root / "pyproject.toml").read_text(encoding="utf-8")
-    src = (root / "build_exe.py").read_text(encoding="utf-8")
+    src = (root / "build_portable.py").read_text(encoding="utf-8")
     assert "app" in src and "version.py" in src
     assert not (root / "build_installer.py").exists()
     assert not (root / "installer").exists()

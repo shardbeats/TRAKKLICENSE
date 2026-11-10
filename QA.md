@@ -23,7 +23,7 @@ py -3 -m pytest tests -q -p no:cacheprovider --cov=app --cov-report=term-missing
 2. `py tools\quality_metrics.py` → gates PASS + `data/quality_report.json`.
 3. Manual: generate 1 non-exclusive + 1 exclusive with demo data, export both PDFs, open them.
 4. Verify: no `{UPPER_VAR}` remains, price words match price, term dates coherent.
-5. Rebuild exe: `py build_exe.py` → test exe in clean folder (portable data/ created).
+5. Rebuild portable: `py build_portable.py` → unzip and test in a clean folder (portable data/ created).
 
 ## 4. Manual GUI checklist
 - [ ] Empty customer fullname → validation lists CUSTOMER_FULLNAME, preview still renders.
