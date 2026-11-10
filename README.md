@@ -4,9 +4,7 @@
 
 **[Download for Windows](https://github.com/shardbeats/TRAKKLICENSE/releases/latest)** · **[All 6 tools](https://shardbeats.github.io/tools/)** · **[Free beat pack (WAV + stems)](https://shardbeats.github.io/landing/)**
 
-<!-- Screenshot: save the image as docs/screenshot.png, then uncomment this block
-<p align="center"><img src="docs/screenshot.png" alt="TRAKKLICENSE generating a beat license contract PDF" width="880"></p>
--->
+<p align="center"><img src="docs/screenshot.jpg" alt="TRAKKLICENSE generating a beat license contract PDF" width="880"></p>
 
 Free and open source (MIT). Portable exe, no install, no admin rights, no third-party binaries — your contracts and customer data never leave your computer.
 
