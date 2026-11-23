@@ -458,7 +458,7 @@ class MainWindow(QMainWindow):
             f"TRAKKLICENSE v{APP_VERSION}\n"
             "Offline beat-license generator for beatmakers.\n"
             "Templates + variables → preview → PDF/MD. No accounts, no cloud.\n"
-            "MIT licensed (see LICENSE + NOTICE.md + THIRD-PARTY-NOTICES.md).")
+            "GPL-3.0-only licensed (see LICENSE + LICENSING.md + NOTICE.md + THIRD-PARTY-NOTICES.md).")
 
     def _show_legal(self):
         QMessageBox.information(self, "Legal disclaimer", LEGAL_TEXT)

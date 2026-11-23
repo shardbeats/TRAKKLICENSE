@@ -1,6 +1,6 @@
 # THIRD-PARTY-NOTICES — TRAKKLICENSE
 
-TRAKKLICENSE code is MIT (`LICENSE`). The components below keep
+TRAKKLICENSE code is GPL-3.0-only (`LICENSE`, see `LICENSING.md`; versions published before 2026-11-23 remain MIT). The components below keep
 their own licenses, in source runs AND inside the frozen exe.
 
 | Component | License | Notes |
@@ -16,5 +16,5 @@ automation samples — they are not legal advice (see README).
 Build tool only: PyInstaller (GPLv2 with bootloader exception),
 pytest/pytest-bdd (MIT, dev only).
 
-Compliance: ship `LICENSE` + `NOTICE.md` + this file with the app;
+Compliance: ship `LICENSE` + `LICENSING.md` + `LICENSING.md` + `NOTICE.md` + this file with the app;
 LGPL/BSD texts via the links above.

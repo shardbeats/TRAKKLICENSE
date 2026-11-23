@@ -6,7 +6,7 @@
 
 <p align="center"><img src="docs/screenshot.jpg" alt="TRAKKLICENSE generating a beat license contract PDF" width="880"></p>
 
-Free and open source (MIT). Portable exe, no install, no admin rights, no third-party binaries — your contracts and customer data never leave your computer.
+Free and open source (GPL-3.0-only). Portable exe, no install, no admin rights, no third-party binaries — your contracts and customer data never leave your computer.
 
 
 Offline beat-license generator for beatmakers. Part of ShardBeats TRAKK SUITE.
@@ -226,7 +226,7 @@ Six free, offline tools for beatmakers. They are independent: install only what 
 
 ## FAQ
 
-**Is it free?** Yes. MIT licensed, free for personal and commercial use, with no account and no usage limits.
+**Is it free?** Yes. GPL-3.0-only licensed, free for personal and commercial use, with no account and no usage limits.
 
 **Is this legal advice?** No, and it does not pretend to be. It is a self-help document generator: it fills templates with the values you type. Read the full disclaimer at the bottom of this page before using it for a real deal.
 

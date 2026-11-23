@@ -3,6 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
+license = { text = "GPL-3.0-only" }
 name = "trakklicense"
 dynamic = ["version"]
 description = "Offline beat-license generator for beatmakers"

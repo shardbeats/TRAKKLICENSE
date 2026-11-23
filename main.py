@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-only
 """TRAKKLICENSE entry point."""
 import sys
 from pathlib import Path
